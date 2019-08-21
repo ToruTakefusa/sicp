@@ -1,0 +1,18 @@
+(define (make-interval a b) (cons a b))
+(define (lower-bound interval)
+  (min (car interval) (cdr interval)))
+(define (upper-bound interval)
+  (max (car interval)(cdr interval)))
+(define (add-interval a b)
+  (make-interval (+ (lower-bound a) (lower-bound b))
+                 (+ (upper-bound a) (upper-bound b))))
+(define (sub-interval a b)
+  (add-interval a
+                (make-interval (- (upper-bound b))
+                               (- (lower-bound b)))))
+
+(print (lower-bound (make-interval 1 3)))
+(print (upper-bound (make-interval 1 3)))
+(print (lower-bound (make-interval 3 1)))
+(print (upper-bound (make-interval 3 1)))
+(print (sub-interval (make-interval 0 1) (make-interval 0 4)))
