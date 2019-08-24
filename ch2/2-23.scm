@@ -1,0 +1,9 @@
+(define (for-each f items)
+  (cond ((null? items) #t)
+        (else (f (car items))
+              (for-each f (cdr items)))))
+
+(define nil `())
+
+(for-each (lambda(x) (newline) (display x))
+          (list 57 321 88))
