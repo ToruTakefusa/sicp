@@ -1,4 +1,17 @@
-;(define-macro (delay x) `(lambda () ,x))
+(define-syntax delay
+  (syntax-rules ()
+    ((_ exp) (memo-proc (lambda () exp)))))
+(define (memo-proc proc)
+  (let ((already-run? #f) (result #f))
+    (lambda()
+      (if (not already-run?)
+          (begin (set! result (proc))
+                 (set! already-run? #t)
+                 result)
+          result))))
+(define-syntax cons-stream
+  (syntax-rules ()
+    ((_ a b) (cons a (delay b)))))
 (define (stream-car stream) (car stream))
 (define (stream-cdr stream) (force (cdr stream)))
 (define (force delayed-object)
@@ -23,13 +36,11 @@
       (cons-stream
        low
        (stream-enumerate-interval (+ low 1) high))))
-(define-syntax delay
-  (syntax-rules ()
-    ((_ exp) (lambda () exp))))
-(define-syntax cons-stream
-  (syntax-rules ()
-    ((_ a b) (cons a (delay b)))))
 (define (show x)
   (display-line x)
   x)
 (define x (stream-map show (stream-enumerate-interval 0 10)))
+
+(stream-ref x 5)
+(print "#")
+(stream-ref x 7)
